@@ -1,4 +1,4 @@
-function [posSal, tiempo, vel, rumbo, velVert] = trayectMia(tramos, posIni, velIni, rumboIni, Tini,Tmuestreo, geoide)
+function [posSal, tiempo, vel, rumbo, velVert] = trayectMia(tramos, posIni, velIni, rumboIni, Tini, Tmuestreo, geoide)
 %he añadido comas
 
 acelL = tramos(:,1);
@@ -119,7 +119,7 @@ for i=1:size(tramos,1)
             % distancia recorrida
             d = vel(ultimo)*duracion(i) + acelL(i)*duracion(i)^2/2;                
             errorRumbo = 0;
-            if (geoide(2)~=0)
+            if geoide.Flattening ~= 0
                 %Iteramos para corregir la desviacion de rumbo introducida
                 %por el calculo sobre el elipsoide no esférico
                 nextPosition = reckon('gc',posicion(ultimo,1),...

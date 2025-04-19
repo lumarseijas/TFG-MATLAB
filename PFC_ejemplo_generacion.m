@@ -48,11 +48,12 @@ tramos=[0 0 0 240;0 11 0 98;0 0 0 262];         % Los tramos se especifican como
 %% Generación de la trayectoria ideal sobremuestreada
 
 % Generación en coordenadas geodésicas
-To=0;               %Tiempo de inicio de la trayectoria
-[track(1).posGeod, track(1).tiempo, track(1).velocidad, track(1).rumbo, track(1).velascen] = ...
-    trayectMia(tramos,[yini xini zini],vini,rini,To,Ts,geoide);
+o = 0; %Tiempo de inicio de la trayectoria
 
-% Progección de la trayectoria en el plano estereográfico y de la posición
+[track(1).posGeod, track(1).tiempo, track(1).velocidad, track(1).rumbo, track(1).velascen] = ...
+    trayectMia(tramos, [yini xini zini], vini, rini, To, Ts, geoide);
+
+% Proyección de la trayectoria en el plano estereográfico y de la posición
 % del radar
 
 [radar(1).posStereo(1), radar(1).posStereo(2)] = stereo(...
@@ -74,3 +75,4 @@ plot(target_real.measure(:,13)/1e3,target_real.measure(:,14)/1e3,'+m')
 %% A partir de aquí iría el tracker
 
 %********************TRACKER DE LA FUSION TOOLBOX*******
+estimates = kalman_tracker(target_real);
