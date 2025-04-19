@@ -1,5 +1,5 @@
-function [posSal tiempo vel rumbo velVert] = trayectMia(tramos,posIni,velIni,rumboIni,Tini,Tmuestreo, geoide)
-
+function [posSal, tiempo, vel, rumbo, velVert] = trayectMia(tramos, posIni, velIni, rumboIni, Tini,Tmuestreo, geoide)
+%he añadido comas
 
 acelL = tramos(:,1);
 acelT = tramos(:,2);
@@ -26,6 +26,7 @@ tiempo = [ Tini ; zeros(Ltotal,1) ];
 
 ultimo = 1;
 
+%recorre cada tramo:
 for i=1:size(tramos,1)
     
     N = fix( duracion(i) / Tmuestreo );
@@ -47,7 +48,7 @@ for i=1:size(tramos,1)
 %                         r, rumbo(ultimo)+90, geoide);
 %                     azimCircAux = azimuth('gc', centerAux, posicion(ultimo,:), geoide);
 %                     errorRumbo = azimCircAux - mod((rumbo(ultimo)+270*sign(arc)),360)
-%                 end
+%                 end 
             % centro del circulo minimo
             center = reckon('gc', posicion(ultimo,1), posicion(ultimo,2),...
                 r, rumbo(ultimo)+90+errorRumbo, geoide);                

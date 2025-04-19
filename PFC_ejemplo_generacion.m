@@ -4,7 +4,8 @@
 %%Datos de la tierra, del centro de proyección y de la proyección
 
 %Elipsoide de la tierra
-geoide = almanac('earth','wgs84','meters');
+%geoide = almanac('earth','wgs84','meters');
+geoide  = referenceEllipsoid("wgs84","meter");
 
 %Centro de proyeccion de la proyección estereográfica (sobre España)
 latP = 40.5;

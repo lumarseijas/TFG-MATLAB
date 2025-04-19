@@ -1,13 +1,23 @@
 function posGeod = radar2geodetic(dist,azim,elev, posRadar, geoide)
 
 
-xlv = dist .* cos(elev*pi/180) .* sin(azim*pi/180);
-ylv = dist .* cos(elev*pi/180) .* cos(azim*pi/180);
-zlv = dist .* sin(elev*pi/180);
-    
-[xecef yecef zecef ] = lv2ecef (xlv,ylv,zlv,posRadar(1)*pi/180,...
-    posRadar(2)*pi/180,posRadar(3),geoide);
+% xlv = dist .* cos(elev*pi/180) .* sin(azim*pi/180);
+% ylv = dist .* cos(elev*pi/180) .* cos(azim*pi/180);
+% zlv = dist .* sin(elev*pi/180);
 
-[lat long alt] = ecef2geodetic(xecef, yecef, zecef, geoide);
+% existe la funcion que directamente lo calcula en grados (d de degrees)
+xlv = dist .* cosd(elev) .* sind(azim);
+ylv = dist .* cosd(elev) .* cosd(azim);
+zlv = dist .* sind(elev);
 
-posGeod = [ lat*180/pi long*180/pi alt ];
+%lv2ecef es antiguo
+% [xecef, yecef, zecef ] = lv2ecef (xlv,ylv,zlv,posRadar(1)*pi/180,...
+%     posRadar(2)*pi/180,posRadar(3),geoide);
+spheroid = referenceEllipsoid('WGS84');
+[xecef, yecef, zecef] = enu2ecef(xlv, ylv, zlv, posRadar(1), posRadar(2), posRadar(3), spheroid);
+
+% [lat, long, alt] = ecef2geodetic(xecef, yecef, zecef, geoide);
+[lat, long, alt] = ecef2geodetic(spheroid, xecef, yecef, zecef);
+
+% posGeod = [ lat*180/pi long*180/pi alt ];
+posGeod = [ lat, long, alt ];
