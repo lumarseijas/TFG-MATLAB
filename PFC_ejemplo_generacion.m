@@ -23,7 +23,7 @@ Ts=0.001;            %Intervalo de muestreo de la trayectoria
 
 
 %% Especificación de la posición y datos del radar (se especifican en el plano estereográfico). En este caso está situado en el centro de proyección
-[radar(1).posGeod(1) radar(1).posGeod(2)] = stereo(...
+[radar(1).posGeod(1), radar(1).posGeod(2)] = stereo(...
          projection,0,0,'surface','inverse');   %Posición del radar 1 (lat º, lon º, h en m)
 radar(1).posGeod(3)=0;      %Altura del radar
 radar(1).id = 1;
@@ -75,4 +75,73 @@ plot(target_real.measure(:,13)/1e3,target_real.measure(:,14)/1e3,'+m')
 %% A partir de aquí iría el tracker
 
 %********************TRACKER DE LA FUSION TOOLBOX*******
-estimates = kalman_tracker(target_real);
+%estimates = kalman_tracker(target_real);
+[estimates, speed, rumbo] = kalman_tracker(target_real, track);
+%%  Gráficas de ajuste de filtros
+% === Variables necesarias ===
+x_real = track(1).posStereo(:,1);
+y_real = track(1).posStereo(:,2);
+x_est = estimates(:,1);
+y_est = estimates(:,2);
+
+T = 4;  % Tiempo entre medidas
+tiempo = (0:length(x_est)-1)' * T;
+
+% Errores
+dx = x_est - x_real(1:length(x_est));
+dy = y_est - y_real(1:length(y_est));
+err_total = [dx'; dy'];
+
+% Dirección real
+vx_real = gradient(x_real, T);
+vy_real = gradient(y_real, T);
+rumbo = atan2(vy_real, vx_real);  % en radianes
+
+% Proyección de errores
+longitudinal = dx .* cos(rumbo(1:length(dx))) + dy .* sin(rumbo(1:length(dy)));
+transversal  = -dx .* sin(rumbo(1:length(dx))) + dy .* cos(rumbo(1:length(dy)));
+
+% Rumbo estimado y real
+vx_est = gradient(x_est, T);
+vy_est = gradient(y_est, T);
+rumbo_est = atan2(vy_est, vx_est) * 180/pi;
+rumbo_real = rumbo(1:length(rumbo_est)) * 180/pi;
+
+% Velocidad sobre el suelo
+velocidad = sqrt(vx_est.^2 + vy_est.^2);
+
+% === Cálculo de errores medios y RMS ===
+mean_long = mean(longitudinal);
+mean_trans = mean(transversal);
+rms_long = sqrt(mean(longitudinal.^2));
+rms_trans = sqrt(mean(transversal.^2));
+
+fprintf('\n--- Errores de seguimiento ---\n');
+fprintf('Error medio longitudinal: %.2f m\n', mean_long);
+fprintf('Error medio transversal:  %.2f m\n', mean_trans);
+fprintf('RMS longitudinal: %.2f m\n', rms_long);
+fprintf('RMS transversal:  %.2f m\n', rms_trans);
+
+% === PLOTS ===
+figure;
+
+subplot(4,1,1);
+plot(tiempo, longitudinal.^2, 'b');
+title('1. Error cuadrático longitudinal');
+xlabel('Tiempo (s)'); ylabel('Error^2 (m²)'); grid on;
+
+subplot(4,1,2);
+plot(tiempo, transversal.^2, 'r');
+title('2. Error cuadrático transversal');
+xlabel('Tiempo (s)'); ylabel('Error^2 (m²)'); grid on;
+
+subplot(4,1,3);
+plot(tiempo, rumbo_est, 'b', tiempo, rumbo_real, '--g');
+title('3. Rumbo');
+xlabel('Tiempo (s)'); ylabel('Rumbo (º)');
+legend('Estimado', 'Real'); grid on;
+
+subplot(4,1,4);
+plot(tiempo, velocidad, 'k');
+title('4. Velocidad');
+xlabel('Tiempo (s)'); ylabel('Velocidad (m/s)'); grid on;

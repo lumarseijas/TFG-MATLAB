@@ -1,7 +1,7 @@
-function estimates = kalman_tracker(target_real)
-
+% function estimates = kalman_tracker(target_real)
+function [estimates, speed, rumbo_deg] = kalman_tracker(target_real, track)
 %PASO 0:
-T = 4; % Tiempo de muestreo del radar
+T = mean(diff(target_real.measure(:,2))); % Tiempo de muestreo del radar
 q = 10; % Varianza del ruido de proceso -> DUDA
 N = size(target_real.measure, 1); % Número de medidas
 
@@ -36,41 +36,73 @@ H = [1 0 0 0;
 %olvide
 
 % PASO 3: bucle del filtro de Kalman:
-% Matriz de covarianza de medida (ejemplo simple)
-R = eye(2) * 100;
+% Matriz de covarianza de medida 
+% R = target_real.mcov(:,:,k);
 
 % Estado inicial (asumimos que empieza en reposo en la primera medida)
-x_hat = [target_real.measure(1,13); target_real.measure(1,14); 0; 0]; % [x y vx vy]
-P = eye(4) * 500; % Incertidumbre grande
+% x_hat = [target_real.measure(1,13); target_real.measure(1,14); 0; 0]; % [x y vx vy]
+% P = eye(4) * 500; % Incertidumbre grande
+% === Inicialización ===
+x0 = target_real.measure(1,13);
+y0 = target_real.measure(1,14);
+x1 = target_real.measure(2,13);
+y1 = target_real.measure(2,14);
+t0 = target_real.measure(1,2);
+t1 = target_real.measure(2,2);
+T0 = t1 - t0;
 
-% Almacenar estimaciones
+vx0 = (x1 - x0) / T0;
+vy0 = (y1 - y0) / T0;
+
+x_hat = [x0; y0; vx0; vy0];
+P = eye(4) * 500;
+
+
+% === Almacenamiento ===
 estimates = zeros(N, 4);
+speed = zeros(N, 1);
+rumbo_deg = zeros(N, 1);
 
-% === Bucle del filtro de Kalman ===
+% === Filtro de Kalman ===
 for k = 1:N
-    % Medida (posición estereográfica medida)
-    z = target_real.measure(k, 13:14)';  % [x, y]
-
-    % Predicción
+    % Medida actual
+    z = target_real.measure(k,13:14)';  % [x y]
+    
+    % Covarianza real de medida
+    R = target_real.mcov(:,:,k);
+    
+    % --- Predicción ---
     x_pred = F * x_hat;
     P_pred = F * P * F' + Q;
-
-    % Actualización
+    
+    % --- Actualización ---
     K = P_pred * H' / (H * P_pred * H' + R);
     x_hat = x_pred + K * (z - H * x_pred);
     P = (eye(4) - K * H) * P_pred;
 
     % Guardar estimación
-    estimates(k, :) = x_hat';
+    estimates(k,:) = x_hat';
+    
+    % Velocidad y rumbo estimado
+    vx = x_hat(3);
+    vy = x_hat(4);
+    speed(k) = sqrt(vx^2 + vy^2);
+    rumbo_deg(k) = atan2d(vx, vy);  % ATENCIÓN: vx/vy da rumbo desde Norte
 end
-
-% === Visualización (opcional) ===
+% === Visualización básica ===
 figure;
 plot(target_real.measure(:,13)/1e3, target_real.measure(:,14)/1e3, '+m'); hold on;
-plot(estimates(:,1)/1e3, estimates(:,2)/1e3, '-b');
-legend('Medidas ruidosas', 'Estimación filtro Kalman');
-xlabel('X (km)'); ylabel('Y (km)');
-title('Seguimiento con filtro de Kalman');
-grid on;
+plot(estimates(:,1)/1e3, estimates(:,2)/1e3, '-b', 'LineWidth', 1.5);
 
+if nargin > 1  % si se pasó track como argumento
+    plot(track(1).posStereo(:,1)/1e3, track(1).posStereo(:,2)/1e3, '--g', 'LineWidth', 1.2);
+    legend('Medidas radar', 'Estimación Kalman', 'Trayectoria real');
+else
+    legend('Medidas radar', 'Estimación Kalman');
+end
+
+xlabel('X (km)');
+ylabel('Y (km)');
+title('Seguimiento de aeronave con filtro de Kalman');
+grid on;
 end
