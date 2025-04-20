@@ -2,7 +2,6 @@
 function [estimates, speed, rumbo_deg] = kalman_tracker(target_real, track)
 %PASO 0:
 T = mean(diff(target_real.measure(:,2))); % Tiempo de muestreo del radar
-q = 10; % Varianza del ruido de proceso -> DUDA
 N = size(target_real.measure, 1); % Número de medidas
 
 %PASO 1:
@@ -15,8 +14,9 @@ F = [1 0 T 0;
      0 0 1 0;
      0 0 0 1];
 
-%DUDA: AQUI PONEMOS Q? - incertidumbre de la aceleracion
-%no tengo la desviacion tipica de la aceleracion asiq supongo que no
+%DUDA: incertidumbre de la aceleracion
+%no tengo la desviacion tipica de la aceleracion
+q = 10; % Varianza del ruido de proceso -> INVENTADA
 Q = q * [T^4/4 0 T^3/2 0;
          0 T^4/4 0 T^3/2;
          T^3/2 0 T^2 0;
@@ -30,12 +30,13 @@ Q = q * [T^4/4 0 T^3/2 0;
 %matriz observacion H:
 H = [1 0 0 0;
      0 1 0 0];
+
+% PASO 3: bucle del filtro de Kalman:
 %matriz covarianza R
 % creada en real_measurement
 %tendre que llamarla pero ahora voy a hacer primero lo basico: que no se me
 %olvide
 
-% PASO 3: bucle del filtro de Kalman:
 % Matriz de covarianza de medida 
 % R = target_real.mcov(:,:,k);
 
