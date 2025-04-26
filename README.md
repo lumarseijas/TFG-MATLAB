@@ -28,5 +28,7 @@
   - Error transversal RMS ≈ 10 km.
   - Error rumbo RMS ≈ 50°.
   - Error velocidad RMS ≈ 150 m/s.
+
+
 *esta un poco mal*
 ---
