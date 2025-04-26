@@ -1,10 +1,7 @@
 clear; close all; clc;
 
 Nsim = 100;    % Número de simulaciones
-T = 4;         % Tiempo entre medidas
-
-% --- Valor de q para el filtro Kalman (provisional, luego lo iremos ajustando) ---
-q_value = 1000;   % Puedes ir probando: 10, 50, 100, 200...
+q_value = 100;   % Valor provisional de q para el filtro Kalman
 
 % Arrays para guardar errores
 longitudinal_error = [];
@@ -13,59 +10,58 @@ rumbo_error = [];
 velocidad_error = [];
 
 for i = 1:Nsim
-    % Mostrar progreso cada 10 simulaciones
+    % Mostrar progreso
     if mod(i,10) == 0
         fprintf('Simulación %d de %d...\n', i, Nsim);
     end
 
-    %% 1. Generar trayectoria nueva
+    %% 1. Generar trayectoria
     [track, radar, projection] = generarTrayectoria();
+    Tmedida = radar(1).Tr;  % Tiempo de muestreo del radar (4 segundos)
 
     %% 2. Medidas ideales
     target_ideal = ideal_measurement(track, radar, projection);
 
-    %% 3. Medidas reales con errores
+    %% 3. Medidas reales
     target_real = real_measurement(target_ideal, radar, 1, 1, 0, 0, 0, projection);
 
     %% 4. Filtro de Kalman
     [estimates, speed_est, rumbo_est] = kalman_tracker(target_real, track, q_value);
 
-    %% 5. Calcular errores
-    % Trayectoria real
-    x_real = track(1).posStereo(:,1);
-    y_real = track(1).posStereo(:,2);
-    vx_real = gradient(x_real, T);
-    vy_real = gradient(y_real, T);
-    rumbo_real = atan2(vy_real, vx_real); % radianes
+    %% 5. Ajustar la trayectoria real interpolada
+    Nmed = size(estimates,1);  % Número de medidas
+    tiempos_medidos = (0:Nmed-1)' * Tmedida;  % instantes donde se mide
 
-    % Estimaciones
+    x_real_interp = interp1(track(1).tiempo, track(1).posStereo(:,1), tiempos_medidos);
+    y_real_interp = interp1(track(1).tiempo, track(1).posStereo(:,2), tiempos_medidos);
+
+    vx_real = gradient(x_real_interp, Tmedida);
+    vy_real = gradient(y_real_interp, Tmedida);
+    vel_real = sqrt(vx_real.^2 + vy_real.^2);
+    rumbo_real = atan2(vy_real, vx_real);
+
+    %% 6. Comparar posiciones estimadas vs reales
     x_est = estimates(:,1);
     y_est = estimates(:,2);
     vx_est = estimates(:,3);
     vy_est = estimates(:,4);
 
-    % Número de muestras estimadas
-    Nmed = size(estimates,1);
+    dx = x_est - x_real_interp;
+    dy = y_est - y_real_interp;
 
-    % Ajustamos tamaños
-    dx = x_est - x_real(1:Nmed);
-    dy = y_est - y_real(1:Nmed);
-
-    % Proyección de errores longitudinal y transversal
-    longitudinal = dx .* cos(rumbo_real(1:Nmed)) + dy .* sin(rumbo_real(1:Nmed));
-    transversal = -dx .* sin(rumbo_real(1:Nmed)) + dy .* cos(rumbo_real(1:Nmed));
+    % Proyección longitudinal y transversal
+    longitudinal = dx .* cos(rumbo_real) + dy .* sin(rumbo_real);
+    transversal  = -dx .* sin(rumbo_real) + dy .* cos(rumbo_real);
 
     % Error de rumbo
-    rumbo_est_calc = atan2(vy_est, vx_est); % radianes
-    error_rumbo = wrapToPi(rumbo_est_calc - rumbo_real(1:Nmed));
+    rumbo_est_calc = atan2(vy_est, vx_est);
+    error_rumbo = wrapToPi(rumbo_est_calc - rumbo_real);
 
     % Error de velocidad
-    vel_real = sqrt(vx_real.^2 + vy_real.^2);
     vel_est = sqrt(vx_est.^2 + vy_est.^2);
-    vel_real_cortado = vel_real(1:Nmed);
-    error_velocidad = vel_est - vel_real_cortado;
+    error_velocidad = vel_est - vel_real;
 
-    %% 6. Guardar errores acumulados
+    %% 7. Guardar errores
     longitudinal_error = [longitudinal_error; longitudinal];
     transversal_error = [transversal_error; transversal];
     rumbo_error = [rumbo_error; error_rumbo];
@@ -73,14 +69,14 @@ for i = 1:Nsim
 
 end
 
-%% 7. Resultados estadísticos
+%% 8. Resultados finales
 fprintf('\n--- Resultados Monte Carlo ---\n');
 fprintf('Error longitudinal RMS: %.2f m\n', sqrt(mean(longitudinal_error.^2)));
 fprintf('Error transversal RMS: %.2f m\n', sqrt(mean(transversal_error.^2)));
 fprintf('Error rumbo RMS: %.2f grados\n', sqrt(mean((180/pi*rumbo_error).^2)));
 fprintf('Error velocidad RMS: %.2f m/s\n', sqrt(mean(velocidad_error.^2)));
 
-%% 8. Mostrar histogramas
+%% 9. Mostrar histogramas
 figure;
 subplot(2,2,1);
 histogram(longitudinal_error, 50);
