@@ -48,7 +48,7 @@ tramos=[0 0 0 240;0 11 0 98;0 0 0 262];         % Los tramos se especifican como
 %% Generación de la trayectoria ideal sobremuestreada
 
 % Generación en coordenadas geodésicas
-o = 0; %Tiempo de inicio de la trayectoria
+To = 0; %Tiempo de inicio de la trayectoria
 
 [track(1).posGeod, track(1).tiempo, track(1).velocidad, track(1).rumbo, track(1).velascen] = ...
     trayectMia(tramos, [yini xini zini], vini, rini, To, Ts, geoide);
@@ -57,12 +57,15 @@ o = 0; %Tiempo de inicio de la trayectoria
 % del radar
 
 [radar(1).posStereo(1), radar(1).posStereo(2)] = stereo(...
-    projection,radar(1).posGeod(1),radar(1).posGeod(2),'surface','forward');
-radar(1).posStereo(3)=radar(1).posGeod(3);
+    projection, radar(1).posGeod(1), radar(1).posGeod(2),'surface','forward');
+radar(1).posStereo(3) = radar(1).posGeod(3);
 
 [track(1).posStereo(:,1), track(1).posStereo(:,2)] = stereo(...
     projection,track(1).posGeod(:,1),track(1).posGeod(:,2),'surface','forward');
 track(1).posStereo(:,3)=track(1).posGeod(:,3);
+
+plot(track(1).posStereo(:,1), track(1).posStereo(:,2)) %por ver pero lgo lo hacemos
+
 
 %% Medidas del radar
 
@@ -89,12 +92,12 @@ tiempo = (0:length(x_est)-1)' * T;
 
 % Errores
 dx = x_est - x_real(1:length(x_est));
-dy = y_est - y_real(1:length(y_est));
+dy = y_est - y_real(1:length(y_est)); %deberia ser la ideal
 err_total = [dx'; dy'];
 
 % Dirección real
-vx_real = gradient(x_real, T);
-vy_real = gradient(y_real, T);
+vx_real = gradient(x_real, T); %no hace falta
+vy_real = gradient(y_real, T); %no hace falta
 rumbo = atan2(vy_real, vx_real);  % en radianes
 
 % Proyección de errores

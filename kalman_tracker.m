@@ -31,7 +31,7 @@ Q = q * [T^4/4 0 T^3/2 0;
 H = [1 0 0 0;
      0 1 0 0];
 
-% PASO 3: bucle del filtro de Kalman:
+% PASO 3: bucle del filtro de Kalman:01
 %matriz covarianza R
 % creada en real_measurement
 %tendre que llamarla pero ahora voy a hacer primero lo basico: que no se me
@@ -93,7 +93,7 @@ end
 % === Visualización básica ===
 figure;
 plot(target_real.measure(:,13)/1e3, target_real.measure(:,14)/1e3, '+m'); hold on;
-plot(estimates(:,1)/1e3, estimates(:,2)/1e3, '-b', 'LineWidth', 1.5);
+plot(estimates(:,1)/1e3, estimates(:,2)/1e3, '-+b', 'LineWidth', 1.5);
 
 if nargin > 1  % si se pasó track como argumento
     plot(track(1).posStereo(:,1)/1e3, track(1).posStereo(:,2)/1e3, '--g', 'LineWidth', 1.2);
