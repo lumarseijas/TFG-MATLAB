@@ -1,5 +1,5 @@
 % function estimates = kalman_tracker(target_real)
-function [estimates, speed, rumbo_deg] = kalman_tracker(target_real, track)
+function [estimates, speed, rumbo_deg] = kalman_tracker(target_real, track, q)
 %PASO 0:
 T = mean(diff(target_real.measure(:,2))); % Tiempo de muestreo del radar
 N = size(target_real.measure, 1); % Número de medidas
@@ -16,7 +16,7 @@ F = [1 0 T 0;
 
 %DUDA: incertidumbre de la aceleracion
 %no tengo la desviacion tipica de la aceleracion
-q = 10; % Varianza del ruido de proceso -> INVENTADA
+%q = 10; % Varianza del ruido de proceso -> INVENTADA
 Q = q * [T^4/4 0 T^3/2 0;
          0 T^4/4 0 T^3/2;
          T^3/2 0 T^2 0;
@@ -56,15 +56,15 @@ vx0 = (x1 - x0) / T0;
 vy0 = (y1 - y0) / T0;
 
 x_hat = [x0; y0; vx0; vy0];
-P = eye(4) * 500;
+P = eye(4) * 500; % incertidumbre inicial grande
 
 
-% === Almacenamiento ===
+% PASO 4: Almacenamiento
 estimates = zeros(N, 4);
 speed = zeros(N, 1);
 rumbo_deg = zeros(N, 1);
 
-% === Filtro de Kalman ===
+% PASO 5: Filtro de Kalman
 for k = 1:N
     % Medida actual
     z = target_real.measure(k,13:14)';  % [x y]
@@ -72,11 +72,11 @@ for k = 1:N
     % Covarianza real de medida
     R = target_real.mcov(:,:,k);
     
-    % --- Predicción ---
+    % Predicción 
     x_pred = F * x_hat;
     P_pred = F * P * F' + Q;
     
-    % --- Actualización ---
+    % Actualización 
     K = P_pred * H' / (H * P_pred * H' + R);
     x_hat = x_pred + K * (z - H * x_pred);
     P = (eye(4) - K * H) * P_pred;
@@ -90,20 +90,20 @@ for k = 1:N
     speed(k) = sqrt(vx^2 + vy^2);
     rumbo_deg(k) = atan2d(vx, vy);  % ATENCIÓN: vx/vy da rumbo desde Norte
 end
-% === Visualización básica ===
-figure;
-plot(target_real.measure(:,13)/1e3, target_real.measure(:,14)/1e3, '+m'); hold on;
-plot(estimates(:,1)/1e3, estimates(:,2)/1e3, '-+b', 'LineWidth', 1.5);
-
-if nargin > 1  % si se pasó track como argumento
-    plot(track(1).posStereo(:,1)/1e3, track(1).posStereo(:,2)/1e3, '--g', 'LineWidth', 1.2);
-    legend('Medidas radar', 'Estimación Kalman', 'Trayectoria real');
-else
-    legend('Medidas radar', 'Estimación Kalman');
-end
-
-xlabel('X (km)');
-ylabel('Y (km)');
-title('Seguimiento de aeronave con filtro de Kalman');
-grid on;
+% PASO 6: Visualización básica 
+% figure;
+% plot(target_real.measure(:,13)/1e3, target_real.measure(:,14)/1e3, '+m'); hold on;
+% plot(estimates(:,1)/1e3, estimates(:,2)/1e3, '-+b', 'LineWidth', 1.5);
+% 
+% if nargin > 1  % si paso track como argumento
+%     plot(track(1).posStereo(:,1)/1e3, track(1).posStereo(:,2)/1e3, '--g', 'LineWidth', 1.2);
+%     legend('Medidas radar', 'Estimación Kalman', 'Trayectoria real');
+% else
+%     legend('Medidas radar', 'Estimación Kalman');
+% end
+% 
+% xlabel('X (km)');
+% ylabel('Y (km)');
+% title('Seguimiento de aeronave con filtro de Kalman');
+% grid on;
 end
