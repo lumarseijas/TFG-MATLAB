@@ -61,7 +61,7 @@
 
      ![KALMAN_Y_MANIOBRA_MONTECARLO](img/montecarlo_por_tramos.jpg)
 
-#### Errores RMS por Tramo
+#### Errores RMS por Tramo-Trayectoria sin aceleración
 
 | Tramo | Tipo        | Métrica       | Kalman CV | Kalman con Maniobras | Mejora Relativa |
 |-------|-------------|----------------|-----------|------------------------|------------------|
@@ -99,6 +99,23 @@
 - ambos kalman con cv y con detección de maniobra
 
      ![KALMAN_Y_MANIOBRA_MONTECARLO](img/montecarlo_por_tramos_acel.jpg)
+
+### Errores RMS por Tramo – Trayectoria con Aceleración
+
+| Tramo | Tipo        | Métrica       | Kalman CV | Kalman con Maniobras | Mejora Relativa |
+|-------|-------------|----------------|-----------|------------------------|------------------|
+| 1     | Rectilíneo  | Longitudinal   | 194.88 m  | 195.23 m              | –0.2 %           |
+|       |             | Transversal    | 108.84 m  | 103.88 m              | 4.6 %            |
+|       |             | Rumbo          | 6.15 º    | 6.10 º                | 0.8 %            |
+|       |             | Velocidad      | 14.09 m/s | 13.33 m/s             | 5.4 %            |
+| 2     | Acelerado   | Longitudinal   | 134.62 m  | 130.21 m              | 3.3 %            |
+|       |             | Transversal    | 67.06 m   | 55.77 m               | 16.8 %           |
+|       |             | Rumbo          | 0.90 º    | 0.84 º                | 6.9 %            |
+|       |             | Velocidad      | 11.46 m/s | 9.18 m/s              | 19.9 %           |
+| 3     | Rectilíneo  | Longitudinal   | 341.94 m  | 345.20 m              | –1.0 %           |
+|       |             | Transversal    | 64.24 m   | 46.72 m               | 27.3 %           |
+|       |             | Rumbo          | 0.54 º    | 0.42 º                | 23.0 %           |
+|       |             | Velocidad      | 4.99 m/s  | 3.53 m/s              | 29.2 %           |
 
  ## COSAS QUE FALTAN
 - número de simulaciones
