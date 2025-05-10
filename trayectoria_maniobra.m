@@ -1,5 +1,3 @@
-clear; close all; clc;
-
 % --- 1. Generar una única trayectoria con maniobra ---
 [track, radar, projection] = generarTrayectoria();
 Tmedida = radar(1).Tr;  % Tiempo entre medidas de radar (4 segundos)
@@ -41,7 +39,7 @@ target_ideal = ideal_measurement(track, radar, projection);
 target_real = real_measurement(target_ideal, radar, 1, 1, 0, 0, 0, projection);
 
 % --- 5. Aplicar filtro de Kalman ---
-q_value = 0; % Valor provisional de q
+q_value = 0.1; % Valor provisional de q
 [estimates, speed_est, rumbo_est] = kalman_tracker(target_real, track, q_value);
 
 % --- 6. Ajustar la trayectoria real interpolada ---
