@@ -35,24 +35,32 @@
 
 ## Resultados
 ### trayectoria 1
-- trayectoria:
-![TRAYECTORIA1](img/trayectoria_unica.jpg)
-- en el tiempo:
-![TRAYECTORIA1tiempo](img/trayectoria_unica_tiempo.jpg)
-- sigma_a=0.1: errores:
-![TRAYECTORIA1errores](img/errores_trayectoria_unica_q=0.1.jpg)
+- trayectoria: 
+
+     ![TRAYECTORIA1](img/trayectoria_unica.jpg)
+
+- en el tiempo: 
+
+     ![TRAYECTORIA1tiempo](img/trayectoria_unica_tiempo.jpg)
+
+- sigma_a=0.1: errores: 
+
+     ![TRAYECTORIA1errores](img/errores_trayectoria_unica_q=0.1.jpg)
 
 ### montecarlo_prueba
 - Monte Carlo ejecutado con 100 simulaciones.
 - q= 0.1
 - kalman velocidad constante
-![KALMAN_MONTECARLO](img/montecarlo_prueba.jpg)
+
+     ![KALMAN_MONTECARLO](img/montecarlo_prueba.jpg)
 
 ### montecarlo_por_tramos
 - 100 simulaciones
 - q=1
 - ambos kalman con cv y con detección de maniobra
-![KALMAN_Y_MANIOBRA_MONTECARLO](img/montecarlo_por_tramos.jpg)
+
+     ![KALMAN_Y_MANIOBRA_MONTECARLO](img/montecarlo_por_tramos.jpg)
+
 #### Errores RMS por Tramo
 
 | Tramo | Tipo        | Métrica       | Kalman CV | Kalman con Maniobras | Mejora Relativa |
@@ -72,18 +80,26 @@
 
 ---
 ### trayectoria 2:CON ACELERACIÓN
+
 - trayectoria:
-![TRAYECTORIA2](img/trayectoria_unica_acel.jpg)
+
+     ![TRAYECTORIA2](img/trayectoria_unica_acel.jpg)
+
 - en el tiempo:
-![TRAYECTORIA2tiempo](img/trayectoria_unica_tiempo_acel.jpg)
+
+     ![TRAYECTORIA2tiempo](img/trayectoria_unica_tiempo_acel.jpg)
+
 - sigma_a=0.1: errores:
-![TRAYECTORIA2errores](img/errores_trayectoria_unica_q=0.1_acel.jpg)
+
+     ![TRAYECTORIA2errores](img/errores_trayectoria_unica_q=0.1_acel.jpg)
 
 ### montecarlo_por_tramos_acel
 - 100 simulaciones
 - q=1
 - ambos kalman con cv y con detección de maniobra
-![KALMAN_Y_MANIOBRA_MONTECARLO](img/montecarlo_por_tramos_acel.jpg)
+
+     ![KALMAN_Y_MANIOBRA_MONTECARLO](img/montecarlo_por_tramos_acel.jpg)
+
  ## COSAS QUE FALTAN
 - número de simulaciones
 - comparar con eurocontrol
