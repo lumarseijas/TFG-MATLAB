@@ -7,15 +7,24 @@ geoide = projection.geoid;
 
 for j=1:Ntracks
     for k=1:Nradar
-        % [elev dist azim] = elevation(...
-        %     radar(k).posGeod(1),radar(k).posGeod(2),radar(k).posGeod(3),...
-        %     track(j).posGeod(:,1),track(j).posGeod(:,2),track(j).posGeod(:,3),...
-        %     'degrees',geoide);
-       % [az,elev,slantRange] = geodetic2aer(lat,lon,h,lat0,lon0,h0,spheroid)
-       [azim, elev, dist] = geodetic2aer(...
-           track(j).posGeod(:,1),track(j).posGeod(:,2),track(j).posGeod(:,3),...
-           radar(k).posGeod(1),radar(k).posGeod(2),radar(k).posGeod(3),...
-           referenceEllipsoid('wgs84')); %crea esferoide estandar de la Tierra- sino puedo usar geoide si ya lo tengo configurado como [a,f]
+       % ESTOY COMENTANDOLO POR SIACASO:
+       % [azim, elev, dist] = geodetic2aer(...
+       %     track(j).posGeod(:,1),track(j).posGeod(:,2),track(j).posGeod(:,3),...
+       %     radar(k).posGeod(1),radar(k).posGeod(2),radar(k).posGeod(3),...
+       %     referenceEllipsoid('wgs84')); %crea esferoide estandar de la Tierra- sino puedo usar geoide si ya lo tengo configurado como [a,f]
+        try
+            [azim, elev, dist] = geodetic2aer(...
+                track(j).posGeod(:,1),track(j).posGeod(:,2),track(j).posGeod(:,3),...
+                radar(k).posGeod(1),radar(k).posGeod(2),radar(k).posGeod(3),...
+                geoide);  % O referenceEllipsoid('wgs84') si prefieres
+        catch
+            warning('Error en geodetic2aer para track %d y radar %d. Se asignan NaN.', j, k);
+            Npts = size(track(j).posGeod,1);
+            azim = NaN(Npts,1);
+            elev = NaN(Npts,1);
+            dist = NaN(Npts,1);
+        end
+
 
         lat = track(j).posGeod(:,1);
         long = track(j).posGeod(:,2);
@@ -26,7 +35,13 @@ for j=1:Ntracks
         velascen=track(j).velascen;
         
         unwrapedAntenaAzim = 360*(tiempo-radar(k).Tini)/radar(k).Tr;
-        unwrapedTargetAzim = unwrap(azim*pi/180)*180/pi;
+        %unwrapedTargetAzim = unwrap(azim*pi/180)*180/pi;
+        if all(isfinite(azim))
+            unwrapedTargetAzim = unwrap(azim*pi/180)*180/pi;
+        else
+            unwrapedTargetAzim = azim;  % deja el valor tal cual (aunque sea NaN)
+        end
+
         difAzim = mod(unwrapedAntenaAzim - unwrapedTargetAzim,360);
         difAzim=mod(difAzim+180,360)-180;
 %         comp = find(difAzim>180);

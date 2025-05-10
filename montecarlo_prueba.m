@@ -1,5 +1,3 @@
-
-
 Nsim = 100;    % Número de simulaciones
 q_value = 0.1; % Valor provisional de q para el filtro Kalman
 
@@ -37,6 +35,7 @@ for i = 1:Nsim
     x_real_interp = interp1(track(1).tiempo, track(1).posStereo(:,1), tiempos_medidos);
     y_real_interp = interp1(track(1).tiempo, track(1).posStereo(:,2), tiempos_medidos);
 
+    % me dijo de borrar estos:
     vx_real = gradient(x_real_interp, Tmedida);
     vy_real = gradient(y_real_interp, Tmedida);
     vel_real = sqrt(vx_real.^2 + vy_real.^2);

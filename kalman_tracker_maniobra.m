@@ -1,4 +1,4 @@
-function [estimates, speed, rumbo_deg] = kalman_tracker_maniobras(target_real, track, q_value)
+function [estimates, speed, rumbo_deg] = kalman_tracker_maniobra(target_real, track, q_value)
 % Filtro de Kalman adaptativo con detección de maniobra
 % Usa q_value como valor base para la matriz Q, y lo adapta si detecta maniobras
 
