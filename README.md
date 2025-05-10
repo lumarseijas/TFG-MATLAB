@@ -71,7 +71,19 @@
 |       |             | Velocidad      | 70.69 m/s | 23.07 m/s              | 67.4 %           |
 
 ---
+### trayectoria 2:CON ACELERACIÓN
+- trayectoria:
+![TRAYECTORIA2](img/trayectoria_unica_acel.jpg)
+- en el tiempo:
+![TRAYECTORIA2tiempo](img/trayectoria_unica_tiempo_acel.jpg)
+- sigma_a=0.1: errores:
+![TRAYECTORIA2errores](img/errores_trayectoria_unica_q=0.1_acel.jpg)
+
+### montecarlo_por_tramos_acel
+- 100 simulaciones
+- q=1
+- ambos kalman con cv y con detección de maniobra
+![KALMAN_Y_MANIOBRA_MONTECARLO](img/montecarlo_por_tramos_acel.jpg)
  ## COSAS QUE FALTAN
 - número de simulaciones
 - comparar con eurocontrol
-- la otra trayectoria con aceleración

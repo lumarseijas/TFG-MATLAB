@@ -140,14 +140,14 @@ for i=1:size(tramos,1)
             % distancia recorrida
             d = vel(ultimo)*duracion(i) + acelL(i)*duracion(i)^2/2;   
             errorRumbo = 0;
-            if (geoide(2)~=0)
-                %Iteramos para corregir la desviacion de rumbo introducida
-                %por el calculo sobre el elipsoide no esférico
-                nextPosition = reckon('gc',posicion(ultimo,1),...
-                    posicion(ultimo,2), d/N, rumbo(ultimo), geoide);                                        
-                errorRumbo = azimuth( 'gc', posicion(ultimo,:),...
-                    nextPosition ) - rumbo(ultimo);
-            end
+            % if (geoide(2)~=0)
+            %     %Iteramos para corregir la desviacion de rumbo introducida
+            %     %por el calculo sobre el elipsoide no esférico
+            %     nextPosition = reckon('gc',posicion(ultimo,1),...
+            %         posicion(ultimo,2), d/N, rumbo(ultimo), geoide);                                        
+            %     errorRumbo = azimuth( 'gc', posicion(ultimo,:),...
+            %         nextPosition ) - rumbo(ultimo);
+            % end
             trackAux = track1('gc',posicion(ultimo,1),posicion(ultimo,2),...
                 rumbo(ultimo)-errorRumbo, d+d/N, geoide, [], N+2);
             posicion(ultimo+1:ultimo+N,:) = trackAux(2:N+1,:);
