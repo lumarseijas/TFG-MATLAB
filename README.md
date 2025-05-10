@@ -36,23 +36,23 @@
 ## Resultados
 ### trayectoria 1
 - trayectoria:
-![TRAYECTORIA1](img/trayectoria_unica.png)
+![TRAYECTORIA1](img/trayectoria_unica.jpg)
 - en el tiempo:
-![TRAYECTORIA1tiempo](img/trayectoria_unica_tiempo.png)
+![TRAYECTORIA1tiempo](img/trayectoria_unica_tiempo.jpg)
 - sigma_a=0.1: errores:
-![TRAYECTORIA1errores](img/errores_trayectoria_unica_q=0.1.png)
+![TRAYECTORIA1errores](img/errores_trayectoria_unica_q=0.1.jpg)
 
 ### montecarlo_prueba
 - Monte Carlo ejecutado con 100 simulaciones.
 - q= 0.1
 - kalman velocidad constante
-![KALMAN_MONTECARLO](img/montecarlo.png)
+![KALMAN_MONTECARLO](img/montecarlo.jpg)
 
 ### montecarlo_por_tramos
 - 100 simulaciones
 - q=1
 - ambos kalman con cv y con detección de maniobra
-![KALMAN_Y_MANIOBRA_MONTECARLO](img/montecarlo_por_tramos.png)
+![KALMAN_Y_MANIOBRA_MONTECARLO](img/montecarlo_por_tramos.jpg)
 #### Errores RMS por Tramo
 
 | Tramo | Tipo        | Métrica       | Kalman CV | Kalman con Maniobras | Mejora Relativa |
