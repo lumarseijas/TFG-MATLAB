@@ -16,9 +16,8 @@
 | `montecarlo_por_tramos.m` | Evalúa el error de seguimiento por tramos del vuelo (recto, giro, acelerado).|
 ---
 ## Que llevo:
-- Generación de trayectorias sintéticas con giros.
 
-- Medidas ideales y reales del radar.
+- Generación de trayectorias: con giro (sin aceleracion) y con aceleración (sin giro).
 
 - Implementación del filtro de Kalman CV.
 
@@ -30,8 +29,13 @@
 
 - Gráficas comparativas.
 
-- Con ambas trayectorias: sin aceleración y con aceleración.
+- Calculo del número de ensayos.
 
+- Comparación con Eurocontrol.
+
+## que voy a hacer ahora:
+
+- que detecte el movimiento y cambie el filtro
 ---
 
 ## Resultados
