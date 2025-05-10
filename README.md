@@ -1,20 +1,5 @@
 # TFG
 
-## Estructura de archivos
-
-| Archivo | Descripción |
-|:--------|:------------|
-| `generarTrayectoria.m` | Genera una trayectoria sintética de avión, radar y proyección estereográfica. |
-| `ideal_measurement.m` | Calcula las medidas ideales (sin errores) que recibiría el radar. |
-| `real_measurement.m` | Introduce errores aleatorios y sistemáticos realistas en las medidas. |
-| `kalman_tracker.m` | Aplica el filtro de Kalman de velocidad constante. `q` es parámetro de entrada. (sigma_a) |
-| `kalman_tracker_maniobra.m` | Variante con detección de maniobras: adapta la matriz Q si detecta cambios bruscos. |
-| `trayectMia.m` | Genera la trayectoria segmentada a partir de aceleraciones longitudinales, transversales y verticales. |
-| `elevation2.m` | Calcula la elevación radar hacia la aeronave. |
-| `radar2geodetic.m` | Convierte coordenadas radar a geodésicas (latitud, longitud, altura). |
-| `montecarlo_prueba.m` | Ejecuta simulaciones Monte Carlo y calcula errores estadísticos. |
-| `montecarlo_por_tramos.m` | Evalúa el error de seguimiento por tramos del vuelo (recto, giro, acelerado).|
----
 ## Que llevo:
 
 - Generación de trayectorias: con giro (sin aceleracion) y con aceleración (sin giro).
@@ -33,13 +18,14 @@
 
 - Comparación con Eurocontrol.
 
-## que voy a hacer ahora:
+## Que voy a hacer ahora:
 
 - que detecte el movimiento y cambie el filtro
+
 ---
 
 ## Resultados
-### trayectoria 1
+### Trayectoria 1
 - trayectoria: 
 
      ![TRAYECTORIA1](img/trayectoria_unica.jpg)
@@ -78,7 +64,7 @@
 
 
 ---
-### trayectoria 2:CON ACELERACIÓN
+### Trayectoria 2:CON ACELERACIÓN
 
 - trayectoria:
 
