@@ -195,6 +195,7 @@
 ### con q=10:
 
 - GIRO:
+
 | Tramo | Tipo        | Duración [s] | Métrica       | Kalman CV | Maniobra | Umbral EUROCONTROL | ¿CV Cumple? | ¿Maniobra Cumple? |
 |-------|-------------|---------------|----------------|-----------|----------|---------------------|-------------|--------------------|
 | 1     | Rectilíneo  | 240.0         | Longitudinal   | 133.95 m  | 129.01 m | 60.0 m              | No          | No                 |
@@ -212,6 +213,7 @@
 
 
 - ACELERACIÓN: 
+
 | Tramo | Tipo        | Duración [s] | Métrica       | Kalman CV | Maniobra | Umbral EUROCONTROL | ¿CV Cumple? | ¿Maniobra Cumple? |
 |-------|-------------|---------------|----------------|-----------|----------|---------------------|-------------|--------------------|
 | 1     | Rectilíneo  | 240.0         | Longitudinal   | 133.56 m  | 128.30 m | 60.0 m              | No          | No                 |
@@ -230,6 +232,7 @@
 ### con q=5:
 
 - GIRO:
+
 | Tramo | Tipo        | Duración [s] | Métrica       | Kalman CV | Maniobra | Umbral EUROCONTROL | ¿CV Cumple? | ¿Maniobra Cumple? |
 |-------|-------------|---------------|----------------|-----------|----------|---------------------|-------------|--------------------|
 | 1     | Rectilíneo  | 240.0         | Longitudinal   | 132.87 m  | 127.57 m | 60.0 m              | No          | No                 |
@@ -247,6 +250,7 @@
 
 
 - ACELERACIÓN:
+
 | Tramo | Tipo        | Duración [s] | Métrica       | Kalman CV | Maniobra | Umbral EUROCONTROL | ¿CV Cumple? | ¿Maniobra Cumple? |
 |-------|-------------|---------------|----------------|-----------|----------|---------------------|-------------|--------------------|
 | 1     | Rectilíneo  | 240.0         | Longitudinal   | 131.78 m  | 127.14 m | 60.0 m              | No          | No                 |
@@ -265,6 +269,7 @@
 ### CON Q= 2.5:
 
 - GIRO:
+
 | Tramo | Tipo        | Duración [s] | Métrica       | Kalman CV | Maniobra | Umbral EUROCONTROL | ¿CV Cumple? | ¿Maniobra Cumple? |
 |-------|-------------|---------------|----------------|-----------|----------|---------------------|-------------|--------------------|
 | 1     | Rectilíneo  | 240.0         | Longitudinal   | 129.57 m  | 126.06 m | 60.0 m              | No          | No                 |
@@ -281,6 +286,8 @@
 |       |             |               | Velocidad      | 3.55 m/s  | 3.72 m/s | 5.0 m/s             | **Sí**      | **Sí**             |
 
 - ACELERACIÓN:
+
+
 | Tramo | Tipo        | Duración [s] | Métrica       | Kalman CV | Maniobra | Umbral EUROCONTROL | ¿CV Cumple? | ¿Maniobra Cumple? |
 |-------|-------------|---------------|----------------|-----------|----------|---------------------|-------------|--------------------|
 | 1     | Rectilíneo  | 240.0         | Longitudinal   | 126.09 m  | 122.73 m | 60.0 m              | No          | No                 |
@@ -298,6 +305,7 @@
 
 
 #### OBSERVACIONES ENTRE Q's:
+
 | q      | Trayectoria      | Filtro              | Métricas que cumplen (de 12) |
 |--------|------------------|---------------------|-------------------------------|
 | 0.1    | Giro             | Kalman CV           | 4                             |
