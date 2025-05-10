@@ -46,7 +46,7 @@
 - Monte Carlo ejecutado con 100 simulaciones.
 - q= 0.1
 - kalman velocidad constante
-![KALMAN_MONTECARLO](img/montecarlo.jpg)
+![KALMAN_MONTECARLO](img/montecarlo_prueba.jpg)
 
 ### montecarlo_por_tramos
 - 100 simulaciones
