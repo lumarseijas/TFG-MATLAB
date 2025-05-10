@@ -35,6 +35,10 @@ vini = 155;     % velocidad inicial
 rini = 135;     % rumbo inicial
 
 tramos = [0 0 0 240; 0 4 0 98; 0 0 0 262]; % aceleraciones y tiempos
+% mio para tener los tramos
+track(1).tramos = tramos;
+track(1).tramos_tiempos = cumsum([0; tramos(:,4)]);
+
 
 [track(1).posGeod, track(1).tiempo, track(1).velocidad, track(1).rumbo, track(1).velascen] = ...
     trayectMia(tramos, [yini xini zini], vini, rini, 0, Ts, geoide);
