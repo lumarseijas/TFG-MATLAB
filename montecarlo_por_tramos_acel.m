@@ -1,5 +1,5 @@
 q_value = 2.5;
-
+q_maniobra = 50;
 zeta_r = 0.1;  % error relativo permitido
 Nsim = Nsim_requerido(zeta_r);
 fprintf('Usando zeta_r = %.2f → Nsim = %d simulaciones\n', zeta_r, Nsim);
@@ -26,7 +26,7 @@ for i = 1:Nsim
     target_real  = real_measurement(target_ideal, radar, 1, 1, 0, 0, 0, projection);
 
     [est_cv, ~, ~]  = kalman_tracker(target_real, track, q_value);
-    [est_ad, ~, ~]  = kalman_tracker_maniobra(target_real, track, q_value);
+    [est_ad, ~, ~]  = kalman_tracker_maniobra(target_real, track, q_value, q_maniobra);
 
     Nmed = size(est_cv, 1);
     tiempos = (0:Nmed-1)' * Tmedida;

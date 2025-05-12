@@ -6,43 +6,30 @@ N = size(target_real.measure, 1); % Número de medidas
 
 %PASO 1:
 %Modelo de velocidad constante
+%Matriz de transicion del estado:
 %x_k = [x; y; vx; vy];
 
-%Matriz de transicion del estado:
 F = [1 0 T 0;
      0 1 0 T;
      0 0 1 0;
      0 0 0 1];
 
-%DUDA: incertidumbre de la aceleracion
-%no tengo la desviacion tipica de la aceleracion
-%q = 10; % Varianza del ruido de proceso -> INVENTADA
+%matriz observacion H:
+% [x,y]
+H = [1 0 0 0;
+     0 1 0 0];
+
+%z_k = [x; y] + ruido;
+
+% matriz Q:
+% q es q_value q es sigma_a^2
 Q = q * [T^4/4 0 T^3/2 0;
          0 T^4/4 0 T^3/2;
          T^3/2 0 T^2 0;
          0 T^3/2 0 T^2];
 
-%PASO 2: modelo de observación
+% PASO 3: bucle del filtro de Kalman
 
-% medidas-> en coordenadas esterograficas!!
-%z_k = [x; y] + ruido;
-
-%matriz observacion H:
-H = [1 0 0 0;
-     0 1 0 0];
-
-% PASO 3: bucle del filtro de Kalman:01
-%matriz covarianza R
-% creada en real_measurement
-%tendre que llamarla pero ahora voy a hacer primero lo basico: que no se me
-%olvide
-
-% Matriz de covarianza de medida 
-% R = target_real.mcov(:,:,k);
-
-% Estado inicial (asumimos que empieza en reposo en la primera medida)
-% x_hat = [target_real.measure(1,13); target_real.measure(1,14); 0; 0]; % [x y vx vy]
-% P = eye(4) * 500; % Incertidumbre grande
 % === Inicialización ===
 x0 = target_real.measure(1,13);
 y0 = target_real.measure(1,14);
@@ -74,10 +61,10 @@ for k = 1:N
     
     % Predicción 
     x_pred = F * x_hat;
-    P_pred = F * P * F' + Q;
+    P_pred = F * P * F' + Q; % +Q -> pq pde haber pequeñas aceleraciones
     
     % Actualización 
-    K = P_pred * H' / (H * P_pred * H' + R);
+    K = P_pred * H' / (H * P_pred * H' + R); 
     x_hat = x_pred + K * (z - H * x_pred);
     P = (eye(4) - K * H) * P_pred;
 
@@ -90,6 +77,8 @@ for k = 1:N
     speed(k) = sqrt(vx^2 + vy^2);
     rumbo_deg(k) = atan2d(vx, vy);  % ATENCIÓN: vx/vy da rumbo desde Norte
 end
+
+
 % PASO 6: Visualización básica 
 % figure;
 % plot(target_real.measure(:,13)/1e3, target_real.measure(:,14)/1e3, '+m'); hold on;
