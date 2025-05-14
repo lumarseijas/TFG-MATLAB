@@ -1,5 +1,5 @@
 function [posSal, tiempo, vel, rumbo, velVert] = trayectMia(tramos, posIni, velIni, rumboIni, Tini, Tmuestreo, geoide)
-%he añadido comas
+%rumbo en grados
 
 acelL = tramos(:,1);
 acelT = tramos(:,2);

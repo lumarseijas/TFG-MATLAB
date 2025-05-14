@@ -76,6 +76,7 @@ for k = 1:N
     vy = x_hat(4);
     speed(k) = sqrt(vx^2 + vy^2);
     rumbo_deg(k) = atan2d(vx, vy);  % ATENCIÓN: vx/vy da rumbo desde Norte
+    %atan2d da en rad
 end
 
 

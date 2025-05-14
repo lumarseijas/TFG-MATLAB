@@ -29,7 +29,11 @@ Q_mani = q_maniobra * (Gamma * Gamma');
 q_current = q_nominal;
 
 % Detector de maniobra
-gamma = 5.99;                      % Umbral chi^2 (95% m=2)
+fa = 0.05; %falsa alarma
+%gamma = 5.99;                      % Umbral chi^2 (95% m=2)
+M = 2; %dimensionalidad
+alfa = 1/3;
+gamma = chi2inv(1-fa,(1+alfa)*M/(1-alfa)); %umbral comparacion
 contador_no_maniobra = 0;
 N_maniobra_persistente = 3;        % nº escaneos para volver a modo normal
 
@@ -48,6 +52,9 @@ vy0 = (y1 - y0) / T0;
 x_hat = [x0; y0; vx0; vy0];       % Estado inicial [x y vx vy]
 P = eye(4) * 500;                 % Incertidumbre inicial alta
 
+%inicializacion del filtro de residuo
+Z = 0;
+
 % PASO 4: Almacenamiento
 estimates = zeros(N, 4);
 speed = zeros(N, 1);
@@ -59,17 +66,18 @@ for k = 1:N
     R = target_real.mcov(:,:,k);        % Covarianza de medida
 
     % Predicción
-    Q = q_current * (Gamma * Gamma');  % Q depende del modo actual
     x_pred = F * x_hat;
-    P_pred = F * P * F' + Q;
-
-    % Estadística de innovación (Mahalanobis)
-    innov = z - H * x_pred;
+    P_pred = F * P * F' + Q_nom;
     S = H * P_pred * H' + R;
-    lambda = innov' / S * innov;
 
+    % Estadística de innovación 
+    innov = z - H * x_pred;
+
+    Z = alfa*Z + innov.' /S * innov ; 
+
+   
     % Detector de maniobra
-    if lambda > gamma
+    if Z > gamma
         q_current = q_maniobra;
         contador_no_maniobra = 0;
     else
@@ -78,6 +86,12 @@ for k = 1:N
             q_current = q_nominal;
         end
     end
+    
+    Q = q_current * (Gamma * Gamma');  % Q depende del modo actual
+
+    P_pred = F * P * F' + Q;
+    
+    S = H * P_pred * H' + R;
 
     % Actualización
     K = P_pred * H' / (H * P_pred * H' + R);
