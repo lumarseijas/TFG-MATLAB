@@ -1,6 +1,5 @@
-
-function [estimates, speed, rumbo_deg, Z_vec, modo_maniobra] = ...
-    kalman_tracker_maniobra(target_real, track, q_nominal, q_maniobra)
+function [estimates, speed, rumbo_deg, Z_vec, modo_maniobra, cambios] = ...
+    kalman_tracker_maniobra_eval(target_real, track, q_nominal, q_maniobra, alfa, gamma)
 
 
 % PASO 0: Parámetros temporales
@@ -29,15 +28,11 @@ q_current = q_nominal;
 % Detector de maniobra
 %fa = 0.05; %falsa alarma
 %gamma = 5.99;                      % Umbral chi^2 (95% m=2)
-
-M = 2;  % dimensionalidad de la medida (x, y)
-alfa = 0.7;
-PFA = 0.25;
+%M = 2; %dimensionalidad
+%alfa = 1/3;
 %gamma = chi2inv(1-fa,(1+alfa)*M/(1-alfa)); %umbral comparacion
-Neq = (1 + alfa) / (1 - alfa) * M;
-gamma = chi2inv(1 - PFA, Neq);
 contador_no_maniobra = 0;
-N_maniobra_persistente = 6;        % nº escaneos para volver a modo normal
+N_maniobra_persistente = 5;        % nº escaneos para volver a modo normal
 
 % PASO 3: Inicialización del estado
 x0 = target_real.measure(1,13);
@@ -122,5 +117,6 @@ for k = 1:N
 
     % Nada más necesario: Z_vec y modo_maniobra ya se devuelven
 end
+    cambios = sum(abs(diff(modo_maniobra)));
 
 end
